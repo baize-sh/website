@@ -103,26 +103,26 @@ document.querySelectorAll('.feature-card, .problem-card').forEach(card => {
 // Code Window Terminal Effect
 const codeWindow = document.querySelector('.code-window-body code');
 if (codeWindow) {
-    const originalText = codeWindow.innerHTML;
+    const originalHTML = codeWindow.innerHTML;
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = originalHTML;
+    const textContent = tempDiv.textContent || tempDiv.innerText;
     let index = 0;
     
     // Only animate on first view
     const animateCode = () => {
-        codeWindow.innerHTML = '';
-        const timer = setInterval(() => {
-            if (index < originalText.length) {
-                codeWindow.innerHTML += originalText[index];
-                index++;
-            } else {
-                clearInterval(timer);
-            }
-        }, 20);
+        codeWindow.style.opacity = '0';
+        setTimeout(() => {
+            codeWindow.style.opacity = '1';
+            codeWindow.style.transition = 'opacity 0.5s ease-in';
+        }, 100);
     };
     
     // Trigger animation when code window is in view
     const codeObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && index === 0) {
+                index = 1;
                 setTimeout(animateCode, 300);
                 codeObserver.unobserve(entry.target);
             }
